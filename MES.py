@@ -21,7 +21,7 @@ def MES(dxi,N,a,m,omega):
                         psi += np.exp(m*omega/2*(Mesh.find_real_space_coordinate(Mesh.find_global_number(element_number,local,N),N,a)[0]**2 + \
                             Mesh.find_real_space_coordinate(Mesh.find_global_number(element_number,local,N),N,a)[1]**2))*shape_function(xi_1,xi_2,local)
                     psi_realspace[i+(element_in_row-1)*n_steps, j + (element_row-1)*n_steps] = (x,y,psi)
-                    print(x, 'flet' ,y,psi)
+                    print('chuj')
     return psi_realspace
 
 def f(xi,function_number):
