@@ -14,9 +14,9 @@ def find_global_number(element_number, local_number, N):
         global_number = element_number + row 
     elif local_number == 2:
         global_number = element_number + row + 1
-    elif local_number == 3:
-        global_number = element_number + row + (2*N + 1) + 1
     elif local_number == 4:
+        global_number = element_number + row + (2*N + 1) + 1
+    elif local_number == 3:
         global_number = element_number + row + (2*N + 1)
     else:
         print('Invalid local number')
