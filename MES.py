@@ -47,4 +47,26 @@ def shape_function(xi_1, xi_2,local):
     else:
         print('Error in shape functions')
 
+def local_overlap_matrix(overlap_matrix,a):
+    w_gauss = [5/9 , 8/9 , 5/9]
+    p_gauss = [-np.sqrt(3/5), 0, np.sqrt(3/5)]
+    for i in range(0,4):    #iterates over 4x4 matrix elements
+        for j in range(0,4):    #iterates over 4x4 matrix elements
+            for l in range(0,3):    #iterates over points in Gauss quadrature
+                for n in range(0,3):    #iterates over points in Gauss quadrature
+                    overlap_matrix[i,j] +=  a**2/4 * w_gauss[l] * w_gauss[n] * shape_function(p_gauss[l],p_gauss[n],j+1)* \
+                                            shape_function(p_gauss[l],p_gauss[n],i+1)
 
+def local_kinetic_energy_matrix(kinetic_matrix,m):
+    dxi = (1. - np.sqrt(3./5))/5
+    w_gauss = [5./9. , 8./9. , 5./9.]
+    p_gauss = [-np.sqrt(3./5), 0, np.sqrt(3./5)]
+    for i in range(0,4):    #iterates over 4x4 matrix elements
+        for j in range(0,4):    #iterates over 4x4 matrix elements
+            for l in range(0,3):    #iterates over points in Gauss quadrature
+                for n in range(0,3):    #iterates over points in Gauss quadrature
+                    kinetic_matrix[i,j] += w_gauss[l]*w_gauss[n]/(2*m)* \
+                                    ( (shape_function(p_gauss[l]+dxi,p_gauss[n],j+1) - shape_function(p_gauss[l]-dxi,p_gauss[n],j+1))/(2*dxi) * \
+                                    (shape_function(p_gauss[l]+dxi,p_gauss[n],i+1) - shape_function(p_gauss[l]-dxi,p_gauss[n],i+1))/(2*dxi) + \
+                                    (shape_function(p_gauss[l],p_gauss[n]+dxi,j+1) - shape_function(p_gauss[l],p_gauss[n]-dxi,j+1))/(2*dxi) * \
+                                    (shape_function(p_gauss[l],p_gauss[n]+dxi,i+1) - shape_function(p_gauss[l],p_gauss[n]-dxi,i+1))/(2*dxi) )
