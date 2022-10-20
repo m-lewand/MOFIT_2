@@ -45,7 +45,8 @@ def shape_function(xi_1, xi_2,local):
     elif local == 4:
         return f(xi_1,2)*f(xi_2,2)
     else:
-        print('Error in shape functions')
+        
+        print('\n !!!!!!!!!!!!!!!!!! ERROR IN SHAPE FUNCTIONS !!!!!!!!!!!!!!!!!! \n')
 
 def local_overlap_matrix(overlap_matrix,a):
     w_gauss = [5/9 , 8/9 , 5/9]
