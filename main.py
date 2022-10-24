@@ -9,7 +9,7 @@ from scipy.linalg import eigh
 
 
 
-N = 2
+N = 10
 L = 100 #[nm]
 a = L/(2*N)
 m = 0.067
@@ -22,12 +22,16 @@ kinetic_matrix = np.zeros((4,4))
 S_matrix = np.zeros(((2*N+1)**2, (2*N+1)**2))
 H_matrix = np.zeros(((2*N+1)**2, (2*N+1)**2))
 global_numbers = Mesh.create_global_numbers(N,global_numbers)
+
+text_file = open("Z1.txt", "w")
+print('Numer elementu / Lokalny numer wezla / Globalny numer wezla / (x,y)', file = text_file)
 for i in range(1,4*N**2 + 1):
     for j in range(1,5):
-        #print((i,j,Mesh.find_global_number(i,j,N)))
         number = Mesh.find_global_number(i,j,N)
+        print((i,j,Mesh.find_global_number(i,j,N), Mesh.find_real_space_coordinate(number,N,a)), file = text_file)
+        #number = Mesh.find_global_number(i,j,N)
         #print(find_real_space_coordinate(number,N,a))
-        
+text_file.close()  
 
 PSI = MES.MES(dxi,N,a, m, omega, a_b)
 MES.local_overlap_matrix(overlap_matrix,a/a_b)  #length scaled to Hartree units, so the overlap matrix is in Hartee units
