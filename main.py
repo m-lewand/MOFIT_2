@@ -9,7 +9,7 @@ from scipy.linalg import eigh
 
 
 
-N = 10
+N = 20
 L = 100 #[nm]
 a = L/(2*N)
 m = 0.067
@@ -92,7 +92,28 @@ for i in range(1, (2*N+1)**2 + 1):
 
 #Solving for eigenvalues
 Eigenvalues, Eigenvectors = eigh(H_matrix, S_matrix, type = 1, overwrite_a = True, overwrite_b = True)
-print(Eigenvalues * 27211.6)
+
+printed = 1 
+indexes = []
+text_file = open("Eigenvalues.txt", "w")
+for i in range(len(Eigenvalues)):
+    if Eigenvalues[i] > 0 and printed <= 15:
+        print('Eigenvalue no.', printed, ' = ', Eigenvalues[i] * 27211.6, file = text_file)
+        indexes.append(i)
+        printed += 1
+text_file.close()
+print(indexes)
+
+for eigen_number in range(6):
+    #print(indexes[eigen_number])
+    PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, Eigenvectors[:,int(indexes[eigen_number])])
+    text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
+    for i in range((2*N)*int(2/dxi)) :
+        for j in range((2*N)*int(2/dxi)) :
+            print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
+    text_file.close()
 
 
-print(Eigenvectors[:,-1])
+########################## TIME EVOLUTION ###########################
+
+
