@@ -9,7 +9,7 @@ from scipy.linalg import eigh
 
 
 
-N = 2
+N = 15
 L = 100 #[nm]
 a = L/(2*N)
 m = 0.067
@@ -117,7 +117,7 @@ for eigen_number in range(6):
 
 ########################## TIME EVOLUTION ###########################
 dt = 10
-total_time = 1e5
+total_time = 1e6
 t_steps = int(total_time/dt)
 X_matrix = np.zeros(((2*N+1)**2, (2*N+1)**2))
 x_t = np.zeros(t_steps, dtype=complex)
@@ -125,16 +125,16 @@ D = np.zeros((t_steps, (2*N+1)**2), dtype=complex)
 D[0,:] =  Eigenvectors[:,indexes[0]] + Eigenvectors[:,indexes[1]]
 R_matrix = H_matrix + dt/(2*1j)*S_matrix
 L_matrix = H_matrix - dt/(2*1j)*S_matrix
+LR_matrix = np.matmul(np.linalg.inv(L_matrix), R_matrix)
 for i in range(t_steps-1):
-    D[i+1,:] = np.matmul(np.matmul(np.linalg.inv(L_matrix), R_matrix), D[i,:])
+    D[i+1,:] = np.matmul(LR_matrix, D[i,:])
 
 for element in range(1, (2*N)**2 + 1):
     for i in range(1,5):
         for j in range(1,5):
             X_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += MES.x_operator(element, i, j,a,N)
 
-with open("X.dat", "w") as text_file:         
-    
+with open("X.dat", "w") as text_file:     
     for i in range(t_steps):
         x_t[i] = np.matmul(np.conj(D[i,:]), np.matmul(X_matrix, D[i,:]))
-        print(x_t[i].real/a_b, file=text_file)        
+        print( i *dt, x_t[i].real/a_b, file=text_file)        
