@@ -9,7 +9,7 @@ from scipy.linalg import eigh
 
 
 
-N = 20
+N = 2
 L = 100 #[nm]
 a = L/(2*N)
 m = 0.067
@@ -107,13 +107,20 @@ print(indexes)
 for eigen_number in range(6):
     #print(indexes[eigen_number])
     PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, Eigenvectors[:,int(indexes[eigen_number])])
-    text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
-    for i in range((2*N)*int(2/dxi)) :
-        for j in range((2*N)*int(2/dxi)) :
-            print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
-    text_file.close()
+    #text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
+    with open("Eigenstates" + str(eigen_number) + ".txt", "w") as text_file:
+        for i in range((2*N)*int(2/dxi)) :
+            for j in range((2*N)*int(2/dxi)) :
+                print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
+    #text_file.close()
 
 
 ########################## TIME EVOLUTION ###########################
-
-
+dt = 100
+total_time = 10000
+t_steps = int(total_time/dt)
+D = np.zeros(t_steps, (2*N+1)**2)
+D[0] =  Eigenvectors[:,indexes[0]] + Eigenvectors[:,indexes[1]]
+R_matrix = H_matrix + dt
+#for i in range(t_steps):
+#    D[i+1] = 
