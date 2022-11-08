@@ -96,3 +96,14 @@ def local_kinetic_energy_matrix(kinetic_matrix,m):
                                     (shape_function(p_gauss[l]+dxi,p_gauss[n],i+1) - shape_function(p_gauss[l]-dxi,p_gauss[n],i+1))/(2*dxi) + \
                                     (shape_function(p_gauss[l],p_gauss[n]+dxi,j+1) - shape_function(p_gauss[l],p_gauss[n]-dxi,j+1))/(2*dxi) * \
                                     (shape_function(p_gauss[l],p_gauss[n]+dxi,i+1) - shape_function(p_gauss[l],p_gauss[n]-dxi,i+1))/(2*dxi) )
+
+
+def x_operator(element, i, j, a, N):
+    x = 0
+    w_gauss = [5./9. , 8./9. , 5./9.]
+    p_gauss = [-np.sqrt(3./5), 0, np.sqrt(3./5)]
+    for l in range(0,3):
+        for n in range(0,3):
+            v += a**2/4.* w_gauss[l]*w_gauss[n]* shape_function(p_gauss[l],p_gauss[n],j)* \
+            shape_function(p_gauss[l],p_gauss[n],i)*Mesh.find_real_space_coordinate(Mesh.find_global_number(element, i,N), N,a)[0]
+    return x
