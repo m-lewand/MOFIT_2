@@ -1,0 +1,9 @@
+Eigenvalue no. 1  =  3.195359114101966
+Eigenvalue no. 2  =  30.950144067642853
+Eigenvalue no. 3  =  31.18888185654541
+Eigenvalue no. 4  =  35.73316288831745
+Eigenvalue no. 5  =  36.1407345364455
+Eigenvalue no. 6  =  60.465354275541216
+Eigenvalue no. 7  =  63.751786178379945
+Eigenvalue no. 8  =  63.809661451229466
+Eigenvalue no. 9  =  67.63516352825803
