@@ -136,7 +136,7 @@ with open("Eigenstates_time.dat", "w") as text_file:
         D[t+1,:] = np.matmul(LR_matrix, D[t,:])
 
         if not(t % 1000):
-            PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, D[t,:])
+            PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, np.abs(D[t,:])**2)
             #text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
             for i in range((2*N)*int(2/dxi)) :
                 for j in range((2*N)*int(2/dxi)) :
