@@ -105,5 +105,5 @@ def x_operator(element, i, j, a, N):
     for l in range(0,3):
         for n in range(0,3):
             x += a**2/4.* w_gauss[l]*w_gauss[n]* shape_function(p_gauss[l],p_gauss[n],j)* \
-            shape_function(p_gauss[l],p_gauss[n],i)*Mesh.find_real_space_coordinate(Mesh.find_global_number(element, i,N), N,a)[0]
+            shape_function(p_gauss[l],p_gauss[n],i)*(Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 1,N), N,a)[0]/2 * (1-p_gauss[l]) + Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 2,N), N,a)[0]/2 * (1+p_gauss[l]) )
     return x
