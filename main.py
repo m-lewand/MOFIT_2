@@ -9,7 +9,7 @@ from scipy.linalg import eigh
 
 
 
-N = 15
+N = 2
 L = 100 #[nm]
 a = L/(2*N)
 m = 0.067
@@ -51,6 +51,9 @@ for element in range(1, (2*N)**2 + 1):
         for j in range(1,5):
             S_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] +=  overlap_matrix[i-1,j-1]
             H_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += kinetic_matrix[i-1,j-1] + Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)
+    if element == 11:
+        print(Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)/overlap_matrix[i-1,j-1])
+
 
 
 #Boundary conditions
