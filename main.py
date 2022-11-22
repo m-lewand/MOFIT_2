@@ -141,7 +141,7 @@ with open("Eigenstates_time.dat", "w") as text_file:
             for i in range((2*N)*int(2/dxi)) :
                 for j in range((2*N)*int(2/dxi)) :
                     print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
-            print('\n \n')
+            print('\n \n', file=text_file)
 
 
 for element in range(1, (2*N)**2 + 1):
