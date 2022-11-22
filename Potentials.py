@@ -10,5 +10,5 @@ def Parabolic(element, i, j, m, omega, a, N):
         for n in range(0,3):
             v += a**2/4.*m*omega**2/2. * w_gauss[l]*w_gauss[n]* MES.shape_function(p_gauss[l],p_gauss[n],j)* \
             MES.shape_function(p_gauss[l],p_gauss[n],i)*((Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 1,N), N,a)[0]/2 * (1-p_gauss[l]) + Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 2,N), N,a)[0]/2 * (1+p_gauss[l]) )**2 \
-                + (Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 1,N), N,a)[1]/2 * (1-p_gauss[n]) + Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 2,N), N,a)[1]/2 * (1+p_gauss[n]) )**2)
+                + (Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 1,N), N,a)[1]/2 * (1-p_gauss[n]) + Mesh.find_real_space_coordinate(Mesh.find_global_number(element, 3,N), N,a)[1]/2 * (1+p_gauss[n]) )**2)
     return v 
