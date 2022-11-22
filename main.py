@@ -132,16 +132,17 @@ R_matrix = H_matrix + dt/(2*1j)*S_matrix
 L_matrix = H_matrix - dt/(2*1j)*S_matrix
 LR_matrix = np.matmul(np.linalg.inv(L_matrix), R_matrix)
 with open("Eigenstates_time.dat", "w") as text_file:
-    for i in range(t_steps-1):
-        D[i+1,:] = np.matmul(LR_matrix, D[i,:])
+    for t in range(t_steps-1):
+        D[t+1,:] = np.matmul(LR_matrix, D[t,:])
 
-        if not(i % 1000):
-            PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, D[i,:])
+        if not(t % 1000):
+            PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, D[t,:])
             #text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
             for i in range((2*N)*int(2/dxi)) :
                 for j in range((2*N)*int(2/dxi)) :
                     print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
-            print('\n \n', file=text_file)
+            print("\n\n", file=text_file)
+            
 
 
 for element in range(1, (2*N)**2 + 1):
