@@ -131,13 +131,27 @@ D[0,:] =  Eigenvectors[:,indexes[0]] + Eigenvectors[:,indexes[1]]
 R_matrix = H_matrix + dt/(2*1j)*S_matrix
 L_matrix = H_matrix - dt/(2*1j)*S_matrix
 LR_matrix = np.matmul(np.linalg.inv(L_matrix), R_matrix)
-for i in range(t_steps-1):
-    D[i+1,:] = np.matmul(LR_matrix, D[i,:])
+with open("Eigenstates_time.dat", "w") as text_file:
+    for i in range(t_steps-1):
+        D[i+1,:] = np.matmul(LR_matrix, D[i,:])
+
+        if not(i % 1000):
+            PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, D[i,:])
+            #text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
+            for i in range((2*N)*int(2/dxi)) :
+                for j in range((2*N)*int(2/dxi)) :
+                    print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
+            print('\n \n')
+
 
 for element in range(1, (2*N)**2 + 1):
     for i in range(1,5):
         for j in range(1,5):
             X_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += MES.x_operator(element, i, j,a,N)
+
+
+
+
 
 with open("X.dat", "w") as text_file:     
     for i in range(t_steps):
