@@ -52,7 +52,9 @@ for element in range(1, (2*N)**2 + 1):
             S_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] +=  overlap_matrix[i-1,j-1]
             H_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += kinetic_matrix[i-1,j-1] + Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)
             if element == 11 and i == j:
-                print(Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)/overlap_matrix[i-1,j-1] * 27211.6)
+                print(Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)/overlap_matrix[i-1,j-1] * 27211.6, end = ' ')
+            if j ==5:
+                print('\n')
 
 
 
