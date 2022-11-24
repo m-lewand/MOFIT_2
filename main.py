@@ -9,8 +9,8 @@ from scipy.linalg import eigh
 
 
 
-N = 2
-L = 100 #[nm]
+N = 10
+L = 80 #[nm]
 a = L/(2*N)
 m = 0.067
 a_b = 0.05292
@@ -121,8 +121,9 @@ for eigen_number in range(6):
 
 
 ########################## TIME EVOLUTION ###########################
+print(2*np.pi/(Eigenvalues[int(indexes[1])] - Eigenvalues[int(indexes[0])]))
 dt = 10
-total_time = 1e6
+total_time = 1e4
 t_steps = int(total_time/dt)
 X_matrix = np.zeros(((2*N+1)**2, (2*N+1)**2))
 x_t = np.zeros(t_steps, dtype=complex)
@@ -142,7 +143,8 @@ with open("Eigenstates_time.dat", "w") as text_file:
                 for j in range((2*N)*int(2/dxi)) :
                     print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
             print("\n\n", file=text_file)
-            
+            print(t)
+          
 
 
 for element in range(1, (2*N)**2 + 1):
