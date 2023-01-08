@@ -16,6 +16,13 @@ m = 0.067
 a_b = 0.05292
 dxi = 0.1
 omega = 10. / 27211.6   #Hartree units
+#for gaussian confinement potential
+sigma = 5 # [nm]
+gaussian_deg = 1
+gaussian_depth = -50 / 27211.6    #Hartree units 
+
+time_evolution = False
+
 global_numbers = np.zeros((2*N+1, 2*N+1))
 overlap_matrix = np.zeros((4,4))
 kinetic_matrix = np.zeros((4,4))
@@ -50,10 +57,14 @@ for element in range(1, (2*N)**2 + 1):
     for i in range(1,5):
         for j in range(1,5):
             S_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] +=  overlap_matrix[i-1,j-1]
-            H_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += kinetic_matrix[i-1,j-1] + Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)
+            #H_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += kinetic_matrix[i-1,j-1] + Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)
+            H_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += kinetic_matrix[i-1,j-1] + Potentials.generalized_gaussian(element,i,j,m,gaussian_depth,a/a_b,N, sigma/a_b, gaussian_deg)
+
             if element == 11 and i == j:
                 #print(Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)/overlap_matrix[i-1,j-1] * 27211.6, end = ' ')
                 print('Diagonal element',i, i,' = ', Potentials.Parabolic(element,i,j,m,omega,a/a_b,N)/overlap_matrix[i-1,j-1] * 27211.6)
+                print('Diagonal gaussian element',i, i,' = ', Potentials.generalized_gaussian(element,i,j,m,gaussian_depth,a/a_b,N, sigma/a_b, gaussian_deg)/overlap_matrix[i-1,j-1] * 27211.6)
+
                 if j ==4:
                     print('\n')
 
@@ -128,55 +139,56 @@ for eigen_number in range(6):
 
 
 ########################## TIME EVOLUTION ###########################
-theoretical_period = 2*np.pi/(Eigenvalues[int(indexes[1])] - Eigenvalues[int(indexes[0])])
-print('Theoretical period is:',theoretical_period, '[atomic units]')
-dt = 100
-total_time = 5e4
-t_steps = int(total_time/dt)
-X_matrix = np.zeros(((2*N+1)**2, (2*N+1)**2))
-x_t = np.zeros(t_steps, dtype=complex)
-D = np.zeros((t_steps, (2*N+1)**2), dtype=complex)
-D[0,:] =  Eigenvectors[:,indexes[0]] + Eigenvectors[:,indexes[5]]
-time_factor = complex(0, -dt/2)
+if time_evolution:
+    theoretical_period = 2*np.pi/(Eigenvalues[int(indexes[1])] - Eigenvalues[int(indexes[0])])
+    print('Theoretical period is:',theoretical_period, '[atomic units]')
+    dt = 100
+    total_time = 5e4
+    t_steps = int(total_time/dt)
+    X_matrix = np.zeros(((2*N+1)**2, (2*N+1)**2))
+    x_t = np.zeros(t_steps, dtype=complex)
+    D = np.zeros((t_steps, (2*N+1)**2), dtype=complex)
+    D[0,:] =  Eigenvectors[:,indexes[0]] + Eigenvectors[:,indexes[5]]
+    time_factor = complex(0, -dt/2)
 
-R_matrix = S_matrix + time_factor*H_matrix
-L_matrix = S_matrix - time_factor*H_matrix
-L_inverse_matrix = np.linalg.inv(L_matrix)
+    R_matrix = S_matrix + time_factor*H_matrix
+    L_matrix = S_matrix - time_factor*H_matrix
+    L_inverse_matrix = np.linalg.inv(L_matrix)
 
-LR_matrix = np.matmul(L_inverse_matrix, R_matrix)
-with open("Eigenstates_time.dat", "w") as text_file:
-    for t in range(t_steps-1):
-        D[t+1,:] = np.matmul(LR_matrix, D[t,:])
+    LR_matrix = np.matmul(L_inverse_matrix, R_matrix)
+    with open("Eigenstates_time.dat", "w") as text_file:
+        for t in range(t_steps-1):
+            D[t+1,:] = np.matmul(LR_matrix, D[t,:])
 
-        if not(t%10) and t*dt <  theoretical_period:
-            PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, np.abs(D[t,:])**2)
-            #text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
-            for i in range((2*N)*int(2/dxi)) :
-                for j in range((2*N)*int(2/dxi)) :
-                    print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
-            print("\n\n", file=text_file)
+            if not(t%10) and t*dt <  theoretical_period:
+                PSI_from_MES = MES.MES_from_vector(dxi,N,a, m, omega, a_b, np.abs(D[t,:])**2)
+                #text_file = open("Eigenstates" + str(eigen_number) + ".txt", "w")
+                for i in range((2*N)*int(2/dxi)) :
+                    for j in range((2*N)*int(2/dxi)) :
+                        print(PSI_from_MES[i,j,0], PSI_from_MES[i,j,1], PSI_from_MES[i,j,2], file=text_file)
+                print("\n\n", file=text_file)
+                
             
-          
 
 
-for element in range(1, (2*N)**2 + 1):
-    for i in range(1,5):
-        for j in range(1,5):
-            X_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += MES.x_operator(element, i, j,a/a_b,N)
+    for element in range(1, (2*N)**2 + 1):
+        for i in range(1,5):
+            for j in range(1,5):
+                X_matrix[Mesh.find_global_number(element,i,N) - 1, Mesh.find_global_number(element,j,N) - 1] += MES.x_operator(element, i, j,a/a_b,N)
 
 
-number_of_zeros = 0
-print_period_flag = True 
-with open("X.dat", "w") as text_file:     
-    for i in range(t_steps):
-        x_t[i] = np.matmul(np.conj(D[i,:]), np.matmul(X_matrix, D[i,:]))
-        if x_t[i]*x_t[i-1] < 0 and number_of_zeros == 0:
-            time_first = i*dt 
-            number_of_zeros += 1
-        elif x_t[i]*x_t[i-1] < 0:
-            number_of_zeros += 1 
+    number_of_zeros = 0
+    print_period_flag = True 
+    with open("X.dat", "w") as text_file:     
+        for i in range(t_steps):
+            x_t[i] = np.matmul(np.conj(D[i,:]), np.matmul(X_matrix, D[i,:]))
+            if x_t[i]*x_t[i-1] < 0 and number_of_zeros == 0:
+                time_first = i*dt 
+                number_of_zeros += 1
+            elif x_t[i]*x_t[i-1] < 0:
+                number_of_zeros += 1 
 
-        if number_of_zeros == 3 and print_period_flag:
-            print('Period from simulation: ', i*dt - time_first, '[atomic units]')
-            print_period_flag = False 
-        print( i *dt, x_t[i].real*a_b, file=text_file)        
+            if number_of_zeros == 3 and print_period_flag:
+                print('Period from simulation: ', i*dt - time_first, '[atomic units]')
+                print_period_flag = False 
+            print( i *dt, x_t[i].real*a_b, file=text_file)        
